@@ -1,15 +1,14 @@
-import { useState, useRef } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import styled from '@emotion/styled'
-
-const TaskWrapper = styled.div``
 
 const TaskInput = styled.input`
   width: 100%;
   height: 3rem;
-  padding-right: 5rem;
-  font-size: 1.2rem;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
-  background: transparent;
+  padding-right: 1.5rem;
+  margin 0 auto;
+  font-size: 1rem;
+  font-weight: 200;
+  background: white;
   highlight: none;
 
   &:focus {
@@ -17,37 +16,51 @@ const TaskInput = styled.input`
   }
 `
 
+const TaskEditor = styled.div`
+  box-shadow: -48rem 0 white, 48rem 0 white, 3rem 0 white, -3rem 0 white;
+`
+
 function Task({ task, setDeleteTask, setUpdateTask }) {
   const [editMode, setEditMode] = useState(false)
 
   const inputRef = useRef(null)
-
-  const toggleTimer = () => {}
 
   const handleUpdateTask = (e) => {
     e.preventDefault()
     setUpdateTask(Object.assign(task, { title: inputRef.current.value }))
   }
 
-  const save = () => {
-    setEditMode(false)
-  }
-
   const handleDeleteTask = () => {
     setDeleteTask(task)
   }
 
+  const handleCloseEditor = () => {
+    setUpdateTask(Object.assign(task, { title: inputRef.current.value }))
+    setEditMode(false)
+  }
+
+  useEffect(() => {
+    if (editMode) {
+      inputRef.current.focus()
+    }
+  }, [editMode])
+
   return (
     <>
       {editMode ? (
-        <form className="relative py-3">
-          <TaskInput type="text" ref={inputRef} value={task.title} onChange={handleUpdateTask} />
-          <button type="submit" className="absolute top-1/2 -translate-y-1/2 right-0" onClick={save}>
-            <div className="flex items-center space-x-1 text-sm font-light text-gray-500">↵</div>
-          </button>
-        </form>
+        <>
+          <div className="absolute inset-0 bg-black/20 z-10 overflow-hidden" onClick={handleCloseEditor}></div>
+          <form className="relative z-20">
+            <TaskEditor>
+              <TaskInput type="text" ref={inputRef} value={task.title} onChange={handleUpdateTask} />
+              <button type="submit" className="absolute top-1/2 -translate-y-1/2 right-0" onClick={handleCloseEditor}>
+                <div className="flex items-center space-x-1 text-sm font-light text-gray-500">↵</div>
+              </button>
+            </TaskEditor>
+          </form>
+        </>
       ) : (
-        <TaskWrapper className="relative flex items-center justify-between py-3">
+        <div className="relative flex items-center justify-between py-3">
           <div className="absolute -translate-x-full px-8">
             <button className="text-gray-300 cursor-pointer">00:00:00</button>
           </div>
@@ -68,7 +81,7 @@ function Task({ task, setDeleteTask, setUpdateTask }) {
               </svg>
             </button>
           </div>
-        </TaskWrapper>
+        </div>
       )}
     </>
   )

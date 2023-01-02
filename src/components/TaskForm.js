@@ -4,7 +4,7 @@ import styled from '@emotion/styled'
 const TaskInput = styled.input`
   width: 100%;
   height: 3rem;
-  padding-right: 5rem;
+  padding-right: 1.5rem;
   font-size: 1.2rem;
   border-bottom: 1px solid rgba(0, 0, 0, 0.2);
   background: transparent;
@@ -22,7 +22,6 @@ function TaskForm({ className, setTask }) {
     event.preventDefault()
 
     const task = {
-      id: Math.floor(Math.random() * 1000000000),
       title: inputRef.current.value,
       duration: 0
     }
