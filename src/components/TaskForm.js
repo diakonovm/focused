@@ -1,5 +1,6 @@
-import { useEffect, useRef } from 'react'
+import { useContext, useEffect, useRef } from 'react'
 import styled from '@emotion/styled'
+import { TaskListContext } from '../contexts/TaskListContext'
 
 const TaskInput = styled.input`
   width: 100%;
@@ -17,11 +18,19 @@ const TaskInput = styled.input`
 
 function TaskForm({ className, setTask }) {
   const inputRef = useRef(null)
+  const taskListContext = useContext(TaskListContext)
 
   const handleSetTask = (event) => {
     event.preventDefault()
 
+    const getHighestId = () => {
+      const ids = []
+      taskListContext.groups.map((group) => group.tasks.forEach((task) => ids.push(task.id)))
+      return ids.length ? Math.max(...ids) : 0
+    }
+
     const task = {
+      id: getHighestId() + 1,
       title: inputRef.current.value,
       duration: 0
     }

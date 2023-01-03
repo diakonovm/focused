@@ -1,7 +1,8 @@
 import Task from './components/Task'
 import TaskForm from './components/TaskForm'
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { DateTime } from 'luxon'
+import { TaskListContext } from './contexts/TaskListContext'
 
 function App() {
   const [groups, setGroups] = useState([])
@@ -9,13 +10,6 @@ function App() {
   const createTask = (task) => {
     const date = new Date()
     const dateFormatted = date.toISOString().slice(0, 10)
-    const getHighestId = () => {
-      const ids = []
-      groups.map((group) => group.tasks.forEach((task) => ids.push(task.id)))
-      return ids.length ? Math.max(...ids) : 0
-    }
-
-    task.id = getHighestId() + 1
 
     const idx = groups.findIndex((group) => group.date === dateFormatted)
 
@@ -69,8 +63,15 @@ function App() {
     return dateTime.toFormat('DDD')
   }
 
+  const taskListContext = useMemo(
+    () => ({
+      groups
+    }),
+    [groups]
+  )
+
   return (
-    <>
+    <TaskListContext.Provider value={taskListContext}>
       <nav className="fixed w-full py-5 px-6 bg-white border-b border-gray-500/20 z-10">
         <div className="container mx-auto h-full flex items-center justify-between">
           <div className="text-xl">Focused.</div>
@@ -94,7 +95,7 @@ function App() {
           })}
         </div>
       </main>
-    </>
+    </TaskListContext.Provider>
   )
 }
 
