@@ -1,11 +1,12 @@
 import Task from './components/Task'
 import TaskForm from './components/TaskForm'
-import { useMemo, useState } from 'react'
+import { useMemo } from 'react'
 import { DateTime } from 'luxon'
 import { TaskListContext } from './contexts/TaskListContext'
+import useLocalStorage from './hooks/useLocalStorage'
 
 function App() {
-  const [groups, setGroups] = useState([])
+  const [groups, setGroups] = useLocalStorage('groups', [])
 
   const createTask = (task) => {
     const date = new Date()
@@ -74,7 +75,17 @@ function App() {
     <TaskListContext.Provider value={taskListContext}>
       <nav className="fixed w-full py-5 px-6 bg-white border-b border-gray-500/20 z-10">
         <div className="container mx-auto h-full flex items-center justify-between">
-          <div className="text-xl">Focused.</div>
+          <div className="text-xl">
+            <svg className="w-10 h-10" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 14a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z" fill="#000000" />
+              <path
+                fillRule="evenodd"
+                clipRule="evenodd"
+                d="M22 12c0 5.523-4.477 10-10 10S2 17.523 2 12 6.477 2 12 2s10 4.477 10 10Zm-10 6a6 6 0 1 0 0-12 6 6 0 0 0 0 12Z"
+                fill="#000000"
+              />
+            </svg>
+          </div>
         </div>
       </nav>
       <main className="w-full max-w-3xl pt-24 px-6 mx-auto">

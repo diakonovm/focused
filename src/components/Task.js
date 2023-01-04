@@ -1,4 +1,5 @@
 import { useEffect, useState, useRef } from 'react'
+import { Duration } from 'luxon'
 import styled from '@emotion/styled'
 
 const TaskInput = styled.input`
@@ -20,14 +21,20 @@ const TaskEditor = styled.div`
   box-shadow: -48rem 0 white, 48rem 0 white, 3rem 0 white, -3rem 0 white;
 `
 
+const TaskTimer = styled.button`
+  color: ${(props) => (props.active ? 'black' : 'gray')};
+`
+
 function Task({ task, setDeleteTask, setUpdateTask }) {
   const [editMode, setEditMode] = useState(false)
-
+  const [timerIsActive, setTimerIsActive] = useState(false)
   const inputRef = useRef(null)
 
-  const handleUpdateTask = (e) => {
+  const handleUpdateTitle = (e) => {
     e.preventDefault()
-    setUpdateTask(Object.assign(task, { title: inputRef.current.value }))
+
+    const title = inputRef.current.value
+    setUpdateTask(Object.assign(task, { title }))
   }
 
   const handleDeleteTask = () => {
@@ -35,8 +42,25 @@ function Task({ task, setDeleteTask, setUpdateTask }) {
   }
 
   const handleCloseEditor = () => {
-    setUpdateTask(Object.assign(task, { title: inputRef.current.value }))
+    const title = inputRef.current.value
+
+    if (title.length) {
+      setUpdateTask(Object.assign(task, { title }))
+    } else {
+      setDeleteTask(task)
+    }
+
     setEditMode(false)
+  }
+
+  const handleToggleTimer = (e) => {
+    e.preventDefault()
+
+    if (timerIsActive) {
+      setTimerIsActive(false)
+    } else {
+      setTimerIsActive(true)
+    }
   }
 
   useEffect(() => {
@@ -45,6 +69,20 @@ function Task({ task, setDeleteTask, setUpdateTask }) {
     }
   }, [editMode])
 
+  useEffect(() => {
+    if (timerIsActive) {
+      const id = setInterval(() => {
+        setUpdateTask(Object.assign(task, { duration: task.duration + 1 }))
+      }, 1000)
+
+      return () => clearInterval(id)
+    }
+  }, [timerIsActive])
+
+  const formattedDuration = () => {
+    return Duration.fromObject({ seconds: task.duration }).toFormat('hh:mm:ss')
+  }
+
   return (
     <>
       {editMode ? (
@@ -52,7 +90,7 @@ function Task({ task, setDeleteTask, setUpdateTask }) {
           <div className="absolute inset-0 bg-black/20 z-10 overflow-hidden" onClick={handleCloseEditor}></div>
           <form className="relative z-20">
             <TaskEditor>
-              <TaskInput type="text" ref={inputRef} value={task.title} onChange={handleUpdateTask} />
+              <TaskInput type="text" ref={inputRef} value={task.title} onChange={handleUpdateTitle} />
               <button type="submit" className="absolute top-1/2 -translate-y-1/2 right-0" onClick={handleCloseEditor}>
                 <div className="flex items-center space-x-1 text-sm font-light text-gray-500">↵</div>
               </button>
@@ -62,7 +100,9 @@ function Task({ task, setDeleteTask, setUpdateTask }) {
       ) : (
         <div className="relative flex items-center justify-between py-3">
           <div className="absolute -translate-x-full px-8">
-            <button className="text-gray-300 cursor-pointer">00:00:00</button>
+            <TaskTimer active={timerIsActive} className="text-sm cursor-pointer" onClick={handleToggleTimer}>
+              {formattedDuration()}
+            </TaskTimer>
           </div>
           <button className="flex flex-col w-full overflow-hidden" onClick={() => setEditMode(!editMode)}>
             <div className="font-light truncate">{task.title}</div>

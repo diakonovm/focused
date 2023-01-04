@@ -23,6 +23,10 @@ function TaskForm({ className, setTask }) {
   const handleSetTask = (event) => {
     event.preventDefault()
 
+    const title = inputRef.current.value
+
+    if (title.length === 0) return
+
     const getHighestId = () => {
       const ids = []
       taskListContext.groups.map((group) => group.tasks.forEach((task) => ids.push(task.id)))
@@ -31,7 +35,7 @@ function TaskForm({ className, setTask }) {
 
     const task = {
       id: getHighestId() + 1,
-      title: inputRef.current.value,
+      title,
       duration: 0
     }
 
@@ -47,7 +51,7 @@ function TaskForm({ className, setTask }) {
   return (
     <form className={className}>
       <div className="relative">
-        <TaskInput ref={inputRef} type="text" placeholder="Task" />
+        <TaskInput ref={inputRef} type="text" placeholder="" />
         <button type="submit" className="absolute top-1/2 -translate-y-1/2 right-0" onClick={handleSetTask}>
           <div className="flex items-center space-x-1 text-sm font-light text-gray-500">↵</div>
         </button>
