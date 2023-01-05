@@ -88,7 +88,7 @@ function App() {
           </div>
         </div>
       </nav>
-      <main className="w-full max-w-3xl pt-24 px-6 mx-auto">
+      <main className="w-full max-w-3xl py-24 px-6 mx-auto">
         <TaskForm setTask={createTask} className="mb-12" />
         <div className="space-y-8">
           {groups.map((group, idx) => {
@@ -98,7 +98,7 @@ function App() {
             return (
               tasks.length > 0 && (
                 <div key={idx}>
-                  <p className="mb-3 text-xl font-regular">{dateFormatted(group.date)}</p>
+                  <p className="mb-3 text-lg font-regular">{dateFormatted(group.date)}</p>
                   {tasks}
                 </div>
               )

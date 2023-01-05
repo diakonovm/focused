@@ -16,19 +16,26 @@ const TaskInput = styled.input`
     outline: none;
   }
 `
-
 const TaskEditor = styled.div`
   box-shadow: -48rem 0 white, 48rem 0 white, 3rem 0 white, -3rem 0 white;
 `
-
 const TaskTimer = styled.button`
   color: ${(props) => (props.active ? 'black' : 'gray')};
+`
+const TaskTitle = styled.p`
+  text-decoration: ${(props) => (props.completed ? 'line-through' : '')};
 `
 
 function Task({ task, setDeleteTask, setUpdateTask }) {
   const [editMode, setEditMode] = useState(false)
   const [timerIsActive, setTimerIsActive] = useState(false)
   const inputRef = useRef(null)
+
+  const handleToggleTaskAsComplete = (e) => {
+    e.preventDefault()
+
+    setUpdateTask(Object.assign(task, { completed: !task.completed }))
+  }
 
   const handleUpdateTitle = (e) => {
     e.preventDefault()
@@ -56,11 +63,8 @@ function Task({ task, setDeleteTask, setUpdateTask }) {
   const handleToggleTimer = (e) => {
     e.preventDefault()
 
-    if (timerIsActive) {
-      setTimerIsActive(false)
-    } else {
-      setTimerIsActive(true)
-    }
+    if (timerIsActive) setTimerIsActive(false)
+    else setTimerIsActive(true)
   }
 
   useEffect(() => {
@@ -83,6 +87,19 @@ function Task({ task, setDeleteTask, setUpdateTask }) {
     return Duration.fromObject({ seconds: task.duration }).toFormat('hh:mm:ss')
   }
 
+  const humanDuration = () => {
+    const dur = Duration.fromObject({ seconds: task.duration }).rescale()
+
+    let str = ''
+
+    if (dur.days > 0) dur.days > 1 ? (str += `${dur.days} days `) : (str += `${dur.days} day `)
+    if (dur.hours > 0) dur.hours > 1 ? (str += `${dur.hours} hours `) : (str += `${dur.hours} hour `)
+    if (dur.minutes > 0) dur.minutes > 1 ? (str += `${dur.minutes} minutes `) : (str += `${dur.minutes} minute `)
+    if (dur.seconds > 0) dur.seconds > 1 ? (str += `${dur.seconds} seconds `) : (str += `${dur.seconds} second`)
+
+    return str
+  }
+
   return (
     <>
       {editMode ? (
@@ -98,18 +115,11 @@ function Task({ task, setDeleteTask, setUpdateTask }) {
           </form>
         </>
       ) : (
-        <div className="relative flex items-center justify-between py-3">
-          <div className="absolute -translate-x-full px-8">
-            <TaskTimer active={timerIsActive} className="text-sm cursor-pointer" onClick={handleToggleTimer}>
-              {formattedDuration()}
-            </TaskTimer>
-          </div>
-          <button className="flex flex-col w-full overflow-hidden" onClick={() => setEditMode(!editMode)}>
-            <div className="font-light truncate">{task.title}</div>
-          </button>
-          <div>
-            <button onClick={handleDeleteTask}>
+        <div className="py-3">
+          <div className="relative flex items-center justify-between">
+            <div className="absolute -translate-x-full px-8">
               <svg
+                onClick={handleToggleTimer}
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
                 viewBox="0 0 24 24"
@@ -117,10 +127,38 @@ function Task({ task, setDeleteTask, setUpdateTask }) {
                 stroke="currentColor"
                 className="w-4 h-4"
               >
-                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
-            </button>
+
+              {/* <TaskTimer active={timerIsActive} className="text-sm cursor-pointer" onClick={handleToggleTimer}>
+                {formattedDuration()}
+              </TaskTimer> */}
+            </div>
+            <div>
+              <button className="flex flex-col w-full mb-2 overflow-hidden" onClick={() => setEditMode(!editMode)}>
+                <TaskTitle completed={task.completed} className="font-light truncate">
+                  {task.title}
+                </TaskTitle>
+              </button>
+            </div>
+            <div>
+              <button onClick={handleDeleteTask} className="pl-3">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.5}
+                  stroke="currentColor"
+                  className="w-4 h-4"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
           </div>
+          <p style={{ visibility: humanDuration().length === 0 ? 'hidden' : 'inherit' }} className="text-xs italic">
+            {humanDuration()}
+          </p>
         </div>
       )}
     </>
