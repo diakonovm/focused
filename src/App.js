@@ -99,13 +99,18 @@ function App() {
             const tasks = group.tasks.map((task) => {
               return <Task key={task.id} task={task} setDeleteTask={deleteTask} setUpdateTask={updateTask} />
             })
+
+            const tasksCompleted = group.tasks.reduce((acc, i) => (acc += i.completed ? 1 : 0), 0)
+
             return (
               tasks.length > 0 && (
                 <div key={idx}>
-                  <div className="px-3 mb-4">
+                  <div className="flex items-center justify-between px-3 mb-4">
                     <p className="mb-2 font-semibold">{dateFormatted(group.date)}</p>
-                    <span className="text-base font-light text-[#FF7B00]">0</span>
-                    <span className="text-xs font-bold text-[#FF7B00]"> / 10</span>
+                    <div>
+                      <span className="text-xs font-light text-[#FF7B00]">{tasksCompleted}</span>
+                      <span className="text-xs font-bold text-[#FF7B00]"> / {group.tasks.length}</span>
+                    </div>
                   </div>
                   {tasks}
                 </div>

@@ -26,7 +26,6 @@ const TaskTitle = styled.p`
   text-decoration: ${(props) => (props.completed ? 'line-through' : '')};
   color: ${(props) => (props.completed ? '#FF7B00' : 'black')};
 `
-
 const TaskWrapper = styled.div`
   position: relative;
 
@@ -36,7 +35,6 @@ const TaskWrapper = styled.div`
     }
   }
 `
-
 const TaskMenu = styled.div`
   display: none;
   position: absolute;
@@ -125,7 +123,7 @@ function Task({ task, setDeleteTask, setUpdateTask }) {
     <>
       {editMode ? (
         <>
-          <div className="absolute inset-0 bg-black/20 z-10 overflow-hidden" onClick={handleCloseEditor}></div>
+          <div className="fixed inset-0 bg-black/20 z-10 overflow-hidden" onClick={handleCloseEditor}></div>
           <form className="relative z-20">
             <TaskEditor>
               <TaskInput type="text" ref={inputRef} value={task.title} onChange={handleUpdateTitle} />
@@ -145,46 +143,23 @@ function Task({ task, setDeleteTask, setUpdateTask }) {
                 viewBox="0 0 24 24"
                 strokeWidth={1.5}
                 stroke="currentColor"
-                className="w-4 h-4"
+                className="w-6 h-6 text-[#FF7B00] opacity-80 hover:opacity-100 duration-300 transition-colors"
               >
-                <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-              </svg>
-            </button>
-            <button>
-              <svg
-                onClick={handleDeleteTask}
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={1.5}
-                stroke="currentColor"
-                className="w-4 h-4"
-              >
-                <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
               </svg>
             </button>
           </TaskMenu>
           <div className="relative flex items-center justify-between">
-            {/* <div className="absolute -translate-x-full px-8">
-              
-
-              <TaskTimer active={timerIsActive} className="text-sm cursor-pointer" onClick={handleToggleTimer}>
-                {formattedDuration()}
-              </TaskTimer>
-            </div> */}
-            <div>
-              <button className="flex flex-col w-full overflow-hidden" onClick={() => setEditMode(!editMode)}>
-                <TaskTitle completed={task.completed} className="">
-                  <span class="font-light truncate">{task.title}</span>
-                </TaskTitle>
-              </button>
-            </div>
+            <button className="flex flex-col w-full overflow-hidden" onClick={() => setEditMode(!editMode)}>
+              <TaskTitle completed={task.completed}>
+                <span class="font-light truncate">{task.title}</span>
+              </TaskTitle>
+            </button>
           </div>
-          {/* <div className="flex items-center justify-end">
-            <p style={{ visibility: humanDuration().length === 0 ? 'hidden' : 'inherit' }} className="text-xs italic">
-              {humanDuration()}
-            </p>
-          </div> */}
         </TaskWrapper>
       )}
     </>
