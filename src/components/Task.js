@@ -24,6 +24,27 @@ const TaskTimer = styled.button`
 `
 const TaskTitle = styled.p`
   text-decoration: ${(props) => (props.completed ? 'line-through' : '')};
+  color: ${(props) => (props.completed ? '#FF7B00' : 'black')};
+`
+
+const TaskWrapper = styled.div`
+  position: relative;
+
+  &:hover {
+    > .task-menu {
+      display: block;
+    }
+  }
+`
+
+const TaskMenu = styled.div`
+  display: none;
+  position: absolute;
+  top: 50%;
+  right: 0;
+  width: auto;
+  padding-right: 12px;
+  transform: translateY(-50%);
 `
 
 function Task({ task, setDeleteTask, setUpdateTask }) {
@@ -109,17 +130,29 @@ function Task({ task, setDeleteTask, setUpdateTask }) {
             <TaskEditor>
               <TaskInput type="text" ref={inputRef} value={task.title} onChange={handleUpdateTitle} />
               <button type="submit" className="absolute top-1/2 -translate-y-1/2 right-0" onClick={handleCloseEditor}>
-                <div className="flex items-center space-x-1 text-sm font-light text-gray-500">↵</div>
+                <div className="flex items-center space-x-1 text-sm font-light text-[#FF7B00]">↵</div>
               </button>
             </TaskEditor>
           </form>
         </>
       ) : (
-        <div className="py-3">
-          <div className="relative flex items-center justify-between">
-            <div className="absolute -translate-x-full px-8">
+        <TaskWrapper className="p-3 hover:bg-[#FFB700] hover:bg-opacity-5 rounded-md">
+          <TaskMenu className="task-menu flex items-center space-x-3 z-10">
+            <button onClick={handleToggleTaskAsComplete} className="pl-3 cursor-pointer">
               <svg
-                onClick={handleToggleTimer}
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="w-4 h-4"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+              </svg>
+            </button>
+            <button>
+              <svg
+                onClick={handleDeleteTask}
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
                 viewBox="0 0 24 24"
@@ -129,37 +162,30 @@ function Task({ task, setDeleteTask, setUpdateTask }) {
               >
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
+            </button>
+          </TaskMenu>
+          <div className="relative flex items-center justify-between">
+            {/* <div className="absolute -translate-x-full px-8">
+              
 
-              {/* <TaskTimer active={timerIsActive} className="text-sm cursor-pointer" onClick={handleToggleTimer}>
+              <TaskTimer active={timerIsActive} className="text-sm cursor-pointer" onClick={handleToggleTimer}>
                 {formattedDuration()}
-              </TaskTimer> */}
-            </div>
+              </TaskTimer>
+            </div> */}
             <div>
-              <button className="flex flex-col w-full mb-2 overflow-hidden" onClick={() => setEditMode(!editMode)}>
-                <TaskTitle completed={task.completed} className="font-light truncate">
-                  {task.title}
+              <button className="flex flex-col w-full overflow-hidden" onClick={() => setEditMode(!editMode)}>
+                <TaskTitle completed={task.completed} className="">
+                  <span class="font-light truncate">{task.title}</span>
                 </TaskTitle>
               </button>
             </div>
-            <div>
-              <button onClick={handleDeleteTask} className="pl-3">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={1.5}
-                  stroke="currentColor"
-                  className="w-4 h-4"
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
-            </div>
           </div>
-          <p style={{ visibility: humanDuration().length === 0 ? 'hidden' : 'inherit' }} className="text-xs italic">
-            {humanDuration()}
-          </p>
-        </div>
+          {/* <div className="flex items-center justify-end">
+            <p style={{ visibility: humanDuration().length === 0 ? 'hidden' : 'inherit' }} className="text-xs italic">
+              {humanDuration()}
+            </p>
+          </div> */}
+        </TaskWrapper>
       )}
     </>
   )

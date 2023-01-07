@@ -8,7 +8,7 @@ const TaskInput = styled.input`
   height: 3rem;
   padding-right: 1.5rem;
   font-size: 1.2rem;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+  border-bottom: 1px solid #ff7b00;
   background: transparent;
   highlight: none;
 
@@ -95,7 +95,7 @@ function TaskForm({ className, setTask }) {
           onBlur={onBlur}
         />
         <button type="submit" className="absolute top-1/2 -translate-y-1/2 right-0" onClick={handleSetTask}>
-          <div className="flex items-center space-x-1 text-sm font-light text-gray-500">↵</div>
+          <div className="flex items-center space-x-1 text-sm font-light text-[#FF7B00]">↵</div>
         </button>
       </div>
       <TaskTitleCharacterCountIndicator
@@ -103,8 +103,8 @@ function TaskForm({ className, setTask }) {
         count={titleCharacterCount}
         className="mt-3 text-sm text-black/60"
       >
-        <span className="">{titleCharacterCount}</span>
-        <span className="">/{MAXIMUM_CHARACTER_COUNT}</span>
+        <span className="text-base font-light text-[#FF7B00]">{titleCharacterCount}</span>
+        <span className="text-xs font-bold text-[#FF7B00]"> / {MAXIMUM_CHARACTER_COUNT}</span>
       </TaskTitleCharacterCountIndicator>
     </form>
   )

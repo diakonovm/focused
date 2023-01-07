@@ -4,6 +4,11 @@ import { useMemo } from 'react'
 import { DateTime } from 'luxon'
 import { TaskListContext } from './contexts/TaskListContext'
 import useLocalStorage from './hooks/useLocalStorage'
+import styled from '@emotion/styled'
+
+const NavBar = styled.nav`
+  background-color: #f6edd1;
+`
 
 function App() {
   const [groups, setGroups] = useLocalStorage('groups', [])
@@ -73,23 +78,22 @@ function App() {
 
   return (
     <TaskListContext.Provider value={taskListContext}>
-      <nav className="fixed w-full py-5 px-6 bg-white border-b border-gray-500/20 z-10">
+      <NavBar className="fixed w-full py-5 px-6 border-b border-[#ff7b00] z-10">
         <div className="container mx-auto h-full flex items-center justify-between">
           <div className="text-xl">
             <svg className="w-10 h-10" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M12 14a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z" fill="#000000" />
               <path
                 fillRule="evenodd"
                 clipRule="evenodd"
                 d="M22 12c0 5.523-4.477 10-10 10S2 17.523 2 12 6.477 2 12 2s10 4.477 10 10Zm-10 6a6 6 0 1 0 0-12 6 6 0 0 0 0 12Z"
-                fill="#000000"
+                fill="#FF7B00"
               />
             </svg>
           </div>
         </div>
-      </nav>
-      <main className="w-full max-w-3xl py-24 px-6 mx-auto">
-        <TaskForm setTask={createTask} className="mb-12" />
+      </NavBar>
+      <main className="w-full max-w-4xl py-24 px-6 mx-auto">
+        <TaskForm setTask={createTask} className="px-3 mb-12" />
         <div className="space-y-8">
           {groups.map((group, idx) => {
             const tasks = group.tasks.map((task) => {
@@ -98,7 +102,11 @@ function App() {
             return (
               tasks.length > 0 && (
                 <div key={idx}>
-                  <p className="mb-3 text-lg font-regular">{dateFormatted(group.date)}</p>
+                  <div className="px-3 mb-4">
+                    <p className="mb-2 font-semibold">{dateFormatted(group.date)}</p>
+                    <span className="text-base font-light text-[#FF7B00]">0</span>
+                    <span className="text-xs font-bold text-[#FF7B00]"> / 10</span>
+                  </div>
                   {tasks}
                 </div>
               )
