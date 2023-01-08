@@ -6,6 +6,7 @@ const TaskInput = styled.input`
   width: 100%;
   height: 3rem;
   padding-right: 1.5rem;
+  padding-left: 12px;
   margin 0 auto;
   font-size: 1rem;
   font-weight: 200;
